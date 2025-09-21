@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Presentify: Smart Scheduler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Polyfill process.env for browser environment to prevent crash
+      if (typeof window.process === 'undefined') {
+        window.process = { env: {} };
+      }
+      // Immediately apply theme to prevent FOUC
+      if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+
+      tailwind.config = {
+        darkMode: 'class', // Enable class-based dark mode
+        theme: {
+          extend: {
+            colors: {
+              primary: 'hsl(220, 100%, 60%)',
+              'primary-focus': 'hsl(220, 100%, 55%)',
+              'primary-content': 'hsl(0, 0%, 100%)',
+
+              secondary: 'hsl(240, 10%, 45%)',
+              'secondary-focus': 'hsl(240, 10%, 40%)',
+              'secondary-content': 'hsl(0, 0%, 100%)',
+              
+              accent: 'hsl(160, 100%, 37%)',
+              'accent-focus': 'hsl(160, 100%, 32%)',
+              'accent-content': 'hsl(0, 0%, 100%)',
+              
+              neutral: 'hsl(220, 15%, 96%)',
+              'neutral-focus': 'hsl(220, 15%, 92%)',
+              'neutral-content': 'hsl(220, 20%, 30%)',
+
+              background: 'hsl(220, 25%, 98%)',
+              surface: 'hsla(0, 0%, 100%, 0.5)', // Frosted glass effect base
+              'surface-content': 'hsl(220, 25%, 20%)',
+              'surface-alt': 'hsla(0, 0%, 100%, 0.2)',
+
+              info: 'hsl(190, 80%, 60%)',
+              success: 'hsl(145, 70%, 45%)',
+              warning: 'hsl(40, 90%, 55%)',
+              danger: 'hsl(0, 85%, 60%)',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            boxShadow: {
+              'card': '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+              'card-hover': '0 12px 32px 0 rgba(31, 38, 135, 0.2)',
+            },
+            borderRadius: {
+              'box': '1rem',
+              'btn': '0.75rem',
+              'badge': '1.9rem',
+            },
+            animation: {
+              'fade-in': 'fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards',
+              'slide-up': 'slide-up 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards',
+              'aurora': 'aurora 30s infinite alternate',
+            },
+            keyframes: {
+              'fade-in': {
+                '0%': { opacity: 0, transform: 'scale(0.97)' },
+                '100%': { opacity: 1, transform: 'scale(1)' },
+              },
+              'slide-up': {
+                 '0%': { opacity: 0, transform: 'translateY(20px)' },
+                '100%': { opacity: 1, transform: 'translateY(0)' },
+              },
+              'aurora': {
+                '0%': { 'background-position': '0% 50%' },
+                '50%': { 'background-position': '100% 50%' },
+                '100%': { 'background-position': '0% 50%' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.3); }
+      .dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); }
+      .dark ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+      body {
+        /* Light mode gradient */
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	      background-size: 400% 400%;
+        animation: aurora 30s ease infinite;
+        font-family: 'Inter', sans-serif;
+      }
+      .dark body {
+        /* Dark mode gradient */
+        background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #122c38);
+	      background-size: 400% 400%;
+      }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.16.0"
+  }
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

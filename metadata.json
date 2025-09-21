@@ -1,0 +1,7 @@
+{
+  "name": "Presentify: Smart Attendance & Task Scheduler",
+  "description": "An intelligent application for schools and colleges that automates attendance using face recognition and provides a personalized task scheduler to help students utilize their free time effectively based on their academic profile and career goals.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
