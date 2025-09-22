@@ -17,36 +17,48 @@ const SENT_NOTIFICATIONS_KEY = 'presentify-sent-notifications';
 
 const App: React.FC = () => {
   const [session, setSession] = useState<AppSession | null>(null);
-  const [db, setDb] = useState<MockDb>(() => {
-    try {
-      const savedDbJSON = localStorage.getItem(DB_STORAGE_KEY);
-      const savedPhotosJSON = localStorage.getItem(PHOTOS_STORAGE_KEY);
-      
-      if (savedDbJSON) {
-        const savedDb = JSON.parse(savedDbJSON);
-        const savedPhotos = savedPhotosJSON ? JSON.parse(savedPhotosJSON) : {};
+  const [db, setDb] = useState<MockDb | null>(null);
 
-        // Re-hydrate student avatars from separate storage
-        if (savedDb.students && Array.isArray(savedDb.students)) {
-            savedDb.students = savedDb.students.map((student: Student) => {
-              if (student.avatarUrl && student.avatarUrl.startsWith('local_photo:')) {
-                const studentId = student.avatarUrl.substring('local_photo:'.length);
-                if (savedPhotos[studentId]) {
-                  return { ...student, avatarUrl: savedPhotos[studentId] };
-                }
-              }
-              return student;
-            });
-        }
-        return savedDb;
+useEffect(() => {
+  try {
+    const savedDbJSON = localStorage.getItem(DB_STORAGE_KEY);
+    const savedPhotosJSON = localStorage.getItem(PHOTOS_STORAGE_KEY);
+
+    if (savedDbJSON) {
+      const savedDb = JSON.parse(savedDbJSON);
+      const savedPhotos = savedPhotosJSON ? JSON.parse(savedPhotosJSON) : {};
+
+      // Re-hydrate student avatars
+      if (savedDb.students && Array.isArray(savedDb.students)) {
+        savedDb.students = savedDb.students.map((student: Student) => {
+          if (student.avatarUrl && student.avatarUrl.startsWith("local_photo:")) {
+            const studentId = student.avatarUrl.substring("local_photo:".length);
+            if (savedPhotos[studentId]) {
+              return { ...student, avatarUrl: savedPhotos[studentId] };
+            }
+          }
+          return student;
+        });
       }
-    } catch (error) {
-      console.error("Failed to parse DB from localStorage", error);
-      localStorage.removeItem(DB_STORAGE_KEY);
-      localStorage.removeItem(PHOTOS_STORAGE_KEY);
+
+      setDb(savedDb);
+    } else {
+      // Fallback → fetch metadata.json from public/
+      fetch("/metadata.json")
+        .then((res) => res.json())
+        .then((json) => {
+          setDb(json);
+          localStorage.setItem(DB_STORAGE_KEY, JSON.stringify(json));
+        })
+        .catch((err) => console.error("Error loading metadata.json:", err));
     }
-    return MOCK_DB;
-  });
+  } catch (error) {
+    console.error("Failed to parse DB from localStorage", error);
+    localStorage.removeItem(DB_STORAGE_KEY);
+    localStorage.removeItem(PHOTOS_STORAGE_KEY);
+  }
+}, []);
+
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
     // Initialize state from localStorage or system preference
